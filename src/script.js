@@ -1,5 +1,21 @@
 const MOVIE_LIST_ID = "movie_list";
 const FORM_VIEW_ID = "form_id";
+const STATE_BUTTON_ID = "statebutton_id";
+
+function sortList(state){
+  const list = $$(MOVIE_LIST_ID);
+  switch (state) {
+    case 0:
+      list.sort("id", "asc", "int");
+      break;
+    case 1:
+      list.sort("title", "asc");
+      break;
+    case 2: 
+      list.sort("title", "desc");
+      break; 
+  }
+}
 
 const movieList = {
   rows: [
@@ -12,24 +28,14 @@ const movieList = {
           label: "Sort list:",
         },
         {
+          id: STATE_BUTTON_ID,
           view: "statesButton",
-          width: 100,
+          gravity: 1.5,
           states: {0: "Off", 1: "Sort Asc", 2: "Sort Desc"}, 
-          state: 0,
+          state: 2,
           on: {
 	          onStateChange(state){
-              const list = $$(MOVIE_LIST_ID);
-              switch (state) {
-                case 0:
-                  list.sort("id", "asc", "int");
-                  break;
-                case 1:
-                  list.sort("title", "asc");
-                  break;
-                case 2: 
-                  list.sort("title", "desc");
-                  break; 
-              }
+              sortList(state);
             }
           }
         },
@@ -44,7 +50,11 @@ const movieList = {
       type: {
         height: 60
       },
-      template: "<strong>#id#. #title# </strong> <br/> Year: #year#, rank: #rank#"
+      template: "<strong>#id#. #title# </strong> <br/> Year: #year#, rank: #rank#",
+      ready(){
+        const current = $$(STATE_BUTTON_ID).config.state;
+        sortList(current);
+      }
     }
   ]
 }
@@ -69,14 +79,18 @@ const inputForm = {
 
 webix.protoUI({
   name: "statesButton",
-  defaults: {
-    css: "off",
-    label: "Off"
-  },
   $init(config) {
     const styles = ["off", "sort-asc", "sort-desc"];
 
-    this.attachEvent("onItemClick", () => {;
+    if (!config || !config.states) {
+      webix.message("States are missing");
+      return;
+    } 
+
+    config.label = config.states[config.state];
+    webix.html.addCss(this.$view, styles[config.state]);
+
+    this.attachEvent("onItemClick", () => {
       let currentState = this.config.state;
       
       webix.html.removeCss(this.$view, styles[currentState])
