@@ -97,7 +97,7 @@ webix.protoUI(
 
         webix.html.removeCss(this.$view, styles[currentState]);
 
-        if (Object.keys(config.states).length != 3) {
+        if (Object.keys(config.states).length == 3) {
           currentState++;
           if (currentState > 2) currentState = 0;
         } else webix.message("amount of states is incorrect");
