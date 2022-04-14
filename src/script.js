@@ -83,9 +83,9 @@ webix.protoUI(
     $init(config) {
       const styles = ["off", "sort-asc", "sort-desc"];
 
-      if (!config || !config.states || !config.state || Object.keys(config.states).length != 3) {
+      if (!config || !config.states || !config.state) {
         webix.message("States are missing");
-        config.states = { 0: "Default" }
+        config.states = { 0: "Default" };
         config.state = 0;
       }
 
@@ -97,8 +97,10 @@ webix.protoUI(
 
         webix.html.removeCss(this.$view, styles[currentState]);
 
-        currentState++;
-        if (currentState > 2) currentState = 0;
+        if (Object.keys(config.states).length != 3) {
+          currentState++;
+          if (currentState > 2) currentState = 0;
+        } else webix.message("amount of states is incorrect");
 
         webix.html.addCss(this.$view, styles[currentState]);
 
@@ -139,7 +141,7 @@ webix.protoUI(
         return {
           view: "text",
           label: "error",
-          name: "error"
+          name: "error",
         };
       }
 
