@@ -1,6 +1,5 @@
 const MOVIE_LIST_ID = "movie_list";
-const BUTTON_VIEW_ID = "custom_button";
-const FORM_VIEW_ID = "custom_form";
+const FORM_VIEW_ID = "form_id";
 
 const movieList = {
   rows: [
@@ -13,7 +12,7 @@ const movieList = {
           label: "Sort list:",
         },
         {
-          view: BUTTON_VIEW_ID,
+          view: "statesButton",
           width: 100,
           states: {0: "Off", 1: "Sort Asc", 2: "Sort Desc"}, 
           state: 0,
@@ -51,13 +50,15 @@ const movieList = {
 }
 
 const inputForm = {
-  view: FORM_VIEW_ID,
   id: FORM_VIEW_ID,
+  view: "generatedForm",
   fields: ["Fname", "Lname", "Address"],
   saveAction() {
     const formValues = $$(FORM_VIEW_ID).getValues();
-    Object.keys(formValues).forEach(key => {
-      webix.message(`${key}: ${formValues[key]}`)
+    console.log(Object.entries(formValues));
+
+    Object.entries(formValues).forEach(([key, value]) => {
+      webix.message(`${key}: ${value}`)
     })
   },
   cancelAction(){
@@ -67,7 +68,7 @@ const inputForm = {
 }
 
 webix.protoUI({
-  name: BUTTON_VIEW_ID,
+  name: "statesButton",
   defaults: {
     css: "off",
     label: "Off"
@@ -95,18 +96,17 @@ webix.protoUI({
 }, webix.ui.button)
 
 webix.protoUI({
-  name: FORM_VIEW_ID,
-  id: FORM_VIEW_ID,
+  name: "generatedForm",
   defaults: {
     saveAction(){
       webix.message("default saveAction")
     },
     cancelAction(){
-      $$(FORM_VIEW_ID).clear();
+      $$("customForm").clear();
       webix.message("default cancelAction");
     }
   },
-  $init: function (config) {
+  $init(config) {
     const fields = config.fields.map((item) => {
       return { 
         view: "text", 
