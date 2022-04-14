@@ -2,7 +2,7 @@ const MOVIE_LIST_ID = "movie_list";
 const FORM_VIEW_ID = "form_id";
 const STATE_BUTTON_ID = "statebutton_id";
 
-function sortList(state){
+function sortList(state) {
   const list = $$(MOVIE_LIST_ID);
   switch (state) {
     case 0:
@@ -11,9 +11,9 @@ function sortList(state){
     case 1:
       list.sort("title", "asc");
       break;
-    case 2: 
+    case 2:
       list.sort("title", "desc");
-      break; 
+      break;
   }
 }
 
@@ -31,16 +31,16 @@ const movieList = {
           id: STATE_BUTTON_ID,
           view: "statesButton",
           gravity: 1.5,
-          states: {0: "Off", 1: "Sort Asc", 2: "Sort Desc"}, 
+          states: { 0: "Off", 1: "Sort Asc", 2: "Sort Desc" },
           state: 2,
           on: {
-	          onStateChange(state){
+            onStateChange(state) {
               sortList(state);
-            }
-          }
+            },
+          },
         },
-        { }
-      ]
+        {},
+      ],
     },
     {
       view: "list",
@@ -48,16 +48,17 @@ const movieList = {
       scroll: false,
       url: "data/data.js",
       type: {
-        height: 60
+        height: 60,
       },
-      template: "<strong>#id#. #title# </strong> <br/> Year: #year#, rank: #rank#",
-      ready(){
+      template:
+        "<strong>#id#. #title# </strong> <br/> Year: #year#, rank: #rank#",
+      ready() {
         const current = $$(STATE_BUTTON_ID).config.state;
         sortList(current);
-      }
-    }
-  ]
-}
+      },
+    },
+  ],
+};
 
 const inputForm = {
   id: FORM_VIEW_ID,
@@ -67,93 +68,114 @@ const inputForm = {
     const formValues = $$(FORM_VIEW_ID).getValues();
 
     Object.entries(formValues).forEach(([key, value]) => {
-      webix.message(`${key}: ${value}`)
-    })
+      webix.message(`${key}: ${value}`);
+    });
   },
-  cancelAction(){
+  cancelAction() {
     $$(FORM_VIEW_ID).clear();
     webix.message("custom cancelAction");
-  }
-}
-
-webix.protoUI({
-  name: "statesButton",
-  $init(config) {
-    const styles = ["off", "sort-asc", "sort-desc"];
-
-    if (!config || !config.states) {
-      webix.message("States are missing");
-      return;
-    } 
-
-    config.label = config.states[config.state];
-    webix.html.addCss(this.$view, styles[config.state]);
-
-    this.attachEvent("onItemClick", () => {
-      let currentState = this.config.state;
-      
-      webix.html.removeCss(this.$view, styles[currentState])
-
-      currentState++;
-      if (currentState > 2) currentState = 0;
-      
-      webix.html.addCss(this.$view, styles[currentState])
-  
-      this.config.state = currentState;
-      this.config.label = this.config.states[currentState];
-
-      this.refresh();
-      this.callEvent("onStateChange", [currentState]);
-    })
-  }
-}, webix.ui.button)
-
-webix.protoUI({
-  name: "generatedForm",
-  defaults: {
-    saveAction(){
-      webix.message("default saveAction")
-    },
-    cancelAction(){
-      webix.message("default cancelAction");
-    }
   },
-  $init(config) {
-    const fields = config.fields.map((item) => {
-      return { 
-        view: "text", 
-        label: item, 
-        name: item 
+};
+
+webix.protoUI(
+  {
+    name: "statesButton",
+    $init(config) {
+      const styles = ["off", "sort-asc", "sort-desc"];
+
+      if (!config || !config.states || !config.state || Object.keys(config.states).length != 3) {
+        webix.message("States are missing");
+        config.states = [ "Default" ];
+        config.state = 0;
+      }
+
+      config.label = config.states[config.state];
+      webix.html.addCss(this.$view, styles[config.state]);
+
+      this.attachEvent("onItemClick", () => {
+        let currentState = this.config.state;
+
+        webix.html.removeCss(this.$view, styles[currentState]);
+
+        console.log(this.config.states)
+
+        currentState++;
+        if (currentState > 2) currentState = 0;
+
+        webix.html.addCss(this.$view, styles[currentState]);
+
+        this.config.state = currentState;
+        this.config.label = this.config.states[currentState];
+
+        this.refresh();
+        this.callEvent("onStateChange", [currentState]);
+      });
+    },
+  },
+  webix.ui.button
+);
+
+webix.protoUI(
+  {
+    name: "generatedForm",
+    defaults: {
+      saveAction() {
+        webix.message("default saveAction");
+      },
+      cancelAction() {
+        webix.message("default cancelAction");
+      },
+    },
+    $init(config) {
+      let fields = [];
+      if (config.fields && Array.isArray(config.fields)) {
+        fields = config.fields.map((item) => {
+          return {
+            view: "text",
+            label: item,
+            name: item,
+          };
+        });
+      } else {
+        webix.message("Fields are missing");
+        return {
+          view: "text",
+          label: "error",
+          name: "error"
+        };
+      }
+
+      const buttons = {
+        cols: [
+          {
+            view: "button",
+            value: "Cancel",
+            click: () =>
+              config.cancelAction
+                ? config.cancelAction.call(this)
+                : this.defaults.cancelAction.call(this),
+          },
+          {},
+          {
+            view: "button",
+            value: "Save",
+            css: "webix_primary",
+            click: () =>
+              config.saveAction
+                ? config.saveAction.call(this)
+                : this.defaults.saveAction.call(this),
+          },
+        ],
       };
-    });
-    
-    const buttons = {
-      cols: [
-        {
-          view: "button",
-          value: "Cancel",
-          click: config.cancelAction ? config.cancelAction : this.defaults.cancelAction
-        },
-        { },
-        {
-          view: "button",
-          value: "Save",
-          css: "webix_primary",
-          click: config.saveAction ? config.saveAction : this.defaults.saveAction 
-        },
-      ],
-    };
 
-    config.elements = [...fields, buttons];
-  }
-}, webix.ui.form)
+      config.elements = [...fields, buttons];
+    },
+  },
+  webix.ui.form
+);
 
-webix.ready(function(){
+webix.ready(function () {
   webix.ui({
-    cols: [
-      movieList,
-      { view: "resizer" },
-      inputForm
-    ]
+    cols: [movieList, { view: "resizer" }, inputForm],
   });
 });
