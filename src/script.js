@@ -65,7 +65,6 @@ const inputForm = {
   fields: ["Fname", "Lname", "Address"],
   saveAction() {
     const formValues = $$(FORM_VIEW_ID).getValues();
-    console.log(Object.entries(formValues));
 
     Object.entries(formValues).forEach(([key, value]) => {
       webix.message(`${key}: ${value}`)
@@ -116,7 +115,6 @@ webix.protoUI({
       webix.message("default saveAction")
     },
     cancelAction(){
-      $$("customForm").clear();
       webix.message("default cancelAction");
     }
   },
