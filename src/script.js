@@ -22,18 +22,12 @@ const movieList = {
               const list = $$(MOVIE_LIST_ID);
               switch (state) {
                 case 0:
-                  webix.html.removeCss(this.$view, "sort-desc");
-                  webix.html.addCss(this.$view, "off");
                   list.sort("id", "asc", "int");
                   break;
                 case 1:
-                  webix.html.removeCss(this.$view, "off");
-                  webix.html.addCss(this.$view, "sort-asc");
                   list.sort("title", "asc");
                   break;
                 case 2: 
-                  webix.html.removeCss(this.$view, "sort-asc");
-                  webix.html.addCss(this.$view, "sort-desc");
                   list.sort("title", "desc");
                   break; 
               }
@@ -79,16 +73,20 @@ webix.protoUI({
     label: "Off"
   },
   $init(config) {
+    const styles = ["off", "sort-asc", "sort-desc"];
+
     this.attachEvent("onItemClick", () => {;
       let currentState = this.config.state;
+      
+      webix.html.removeCss(this.$view, styles[currentState])
 
       currentState++;
       if (currentState > 2) currentState = 0;
+      
+      webix.html.addCss(this.$view, styles[currentState])
   
       this.config.state = currentState;
       this.config.label = this.config.states[currentState];
-
-      console.log(this.config.state)
 
       this.refresh();
       this.callEvent("onStateChange", [currentState]);
