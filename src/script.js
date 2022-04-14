@@ -85,7 +85,7 @@ webix.protoUI(
 
       if (!config || !config.states || !config.state || Object.keys(config.states).length != 3) {
         webix.message("States are missing");
-        config.states = [ "Default" ];
+        config.states = { 0: "Default" }
         config.state = 0;
       }
 
@@ -96,8 +96,6 @@ webix.protoUI(
         let currentState = this.config.state;
 
         webix.html.removeCss(this.$view, styles[currentState]);
-
-        console.log(this.config.states)
 
         currentState++;
         if (currentState > 2) currentState = 0;
