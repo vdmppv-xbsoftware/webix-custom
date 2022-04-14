@@ -32,7 +32,7 @@ const movieList = {
           view: "statesButton",
           gravity: 1.5,
           states: { 0: "Off", 1: "Sort Asc", 2: "Sort Desc" },
-          state: 2,
+          state: 0,
           on: {
             onStateChange(state) {
               sortList(state);
@@ -83,7 +83,7 @@ webix.protoUI(
     $init(config) {
       const styles = ["off", "sort-asc", "sort-desc"];
 
-      if (!config || !config.states || !config.state) {
+      if (!config || !config.states || config.state == undefined) {
         webix.message("States are missing");
         config.states = { 0: "Default" };
         config.state = 0;
