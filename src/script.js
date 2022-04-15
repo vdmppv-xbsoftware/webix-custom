@@ -83,13 +83,14 @@ webix.protoUI(
     $init(config) {
       const styles = ["off", "sort-asc", "sort-desc"];
 
-      let statesLength = Object.keys(config.states).length;
+      let statesLength = config.states ? Object.keys(config.states).length : 1;
 
-      if (!config || !config.states || config.state == undefined || isNaN(config.state) || config.state > statesLength - 1 || config.state < 0) {
-        webix.message("States are missing");
-        config.states = { 0: "Default" };
+      config.state = config.state > statesLength - 1 ? 0 : config.state || 0;
+
+      if (!config.states || statesLength != 3) {
         config.state = 0;
-        statesLength = Object.keys(config.states).length;
+        config.states = { 0: "Default" };
+        webix.message("States are missing");
       }
 
       config.label = config.states[config.state];
