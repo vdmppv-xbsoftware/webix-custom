@@ -83,7 +83,7 @@ webix.protoUI(
     $init(config) {
       const styles = ["off", "sort-asc", "sort-desc"];
 
-      if (!config || !config.states || config.state == undefined) {
+      if (!config || !config.states || config.state == undefined || isNaN(config.state) || config.state < 0 || config.state > 2) {
         webix.message("States are missing");
         config.states = { 0: "Default" };
         config.state = 0;
