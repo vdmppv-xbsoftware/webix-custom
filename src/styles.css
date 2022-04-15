@@ -1,0 +1,29 @@
+.off .webix_button {
+  background-color: lightgreen;
+  border: 1px solid green;
+  color: rgb(37, 37, 37);
+}
+
+.off .webix_button:hover {
+  background-color: rgb(67, 211, 67);
+}
+
+.sort-asc .webix_button {
+  background-color: lightcoral;
+  border: 1px solid crimson;
+  color: rgb(37, 37, 37);
+}
+
+.sort-asc .webix_button:hover {
+  background-color: rgb(229, 75, 75);
+}
+
+.sort-desc .webix_button {
+  background-color: rgb(252, 243, 71);
+  border: 1px solid yellow;
+  color: rgb(37, 37, 37);
+}
+
+.sort-desc .webix_button:hover {
+  background-color: rgb(241, 233, 24);
+}
